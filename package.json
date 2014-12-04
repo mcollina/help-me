@@ -1,0 +1,30 @@
+{
+  "name": "help-me",
+  "version": "0.0.1",
+  "description": "Help command for node, partner of minimist and commist",
+  "main": "help-me.js",
+  "scripts": {
+    "test": "tape test.js | faucet"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mcollina/help-me.git"
+  },
+  "keywords": [
+    "help",
+    "command",
+    "minimist",
+    "commist"
+  ],
+  "author": "Matteo Collina <hello@matteocollina.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mcollina/help-me/issues"
+  },
+  "homepage": "https://github.com/mcollina/help-me",
+  "devDependencies": {
+    "commist": "^1.0.0",
+    "faucet": "0.0.1",
+    "tape": "^3.0.3"
+  }
+}
