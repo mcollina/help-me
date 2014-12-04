@@ -26,5 +26,11 @@
     "commist": "^1.0.0",
     "faucet": "0.0.1",
     "tape": "^3.0.3"
+  },
+  "dependencies": {
+    "concat-stream": "^1.4.7",
+    "pump": "^1.0.0",
+    "readable-stream": "^1.0.33",
+    "xtend": "^4.0.0"
   }
 }
