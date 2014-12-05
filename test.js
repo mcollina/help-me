@@ -7,12 +7,14 @@ var test        = require('tape')
 test('show the doc/help.txt from the require.main folder if no options are passed', function(t) {
   t.plan(2)
 
-  helpMe().pipe(concat(function(data) {
-    fs.readFile('./doc/help.txt', function(err, expected) {
-      t.error(err)
-      t.equal(data.toString(), expected.toString())
-    })
-  }))
+  helpMe()
+    .createHelpStream()
+    .pipe(concat(function(data) {
+      fs.readFile('./doc/help.txt', function(err, expected) {
+        t.error(err)
+        t.equal(data.toString(), expected.toString())
+      })
+    }))
 })
 
 test('show a generic help.txt from a folder to a stream', function(t) {
@@ -20,12 +22,13 @@ test('show a generic help.txt from a folder to a stream', function(t) {
 
   helpMe({
       dir: 'fixture/basic'
-  }).pipe(concat(function(data) {
-    fs.readFile('fixture/basic/help.txt', function(err, expected) {
-      t.error(err)
-      t.equal(data.toString(), expected.toString())
-    })
-  }))
+  }).createHelpStream()
+    .pipe(concat(function(data) {
+      fs.readFile('fixture/basic/help.txt', function(err, expected) {
+        t.error(err)
+        t.equal(data.toString(), expected.toString())
+      })
+    }))
 })
 
 test('custom help command with an array', function(t) {
@@ -33,13 +36,13 @@ test('custom help command with an array', function(t) {
 
   helpMe({
       dir: 'fixture/basic'
-    , args: ['hello']
-  }).pipe(concat(function(data) {
-    fs.readFile('fixture/basic/hello.txt', function(err, expected) {
-      t.error(err)
-      t.equal(data.toString(), expected.toString())
-    })
-  }))
+  }).createHelpStream(['hello'])
+    .pipe(concat(function(data) {
+      fs.readFile('fixture/basic/hello.txt', function(err, expected) {
+        t.error(err)
+        t.equal(data.toString(), expected.toString())
+      })
+    }))
 })
 
 test('custom help command without an ext', function(t) {
@@ -48,13 +51,13 @@ test('custom help command without an ext', function(t) {
   helpMe({
       dir: 'fixture/basic'
     , ext: ''
-    , args: ['hello']
-  }).pipe(concat(function(data) {
-    fs.readFile('fixture/basic/hello', function(err, expected) {
-      t.error(err)
-      t.equal(data.toString(), expected.toString())
-    })
-  }))
+  }).createHelpStream(['hello'])
+    .pipe(concat(function(data) {
+      fs.readFile('fixture/basic/hello', function(err, expected) {
+        t.error(err)
+        t.equal(data.toString(), expected.toString())
+      })
+    }))
 })
 
 test('custom help command with a string', function(t) {
@@ -62,13 +65,13 @@ test('custom help command with a string', function(t) {
 
   helpMe({
       dir: 'fixture/basic'
-    , args: 'hello'
-  }).pipe(concat(function(data) {
-    fs.readFile('fixture/basic/hello.txt', function(err, expected) {
-      t.error(err)
-      t.equal(data.toString(), expected.toString())
-    })
-  }))
+  }).createHelpStream('hello')
+    .pipe(concat(function(data) {
+      fs.readFile('fixture/basic/hello.txt', function(err, expected) {
+        t.error(err)
+        t.equal(data.toString(), expected.toString())
+      })
+    }))
 })
 
 test('missing help file', function(t) {
@@ -76,8 +79,9 @@ test('missing help file', function(t) {
 
   helpMe({
       dir: 'fixture/basic'
-    , args: 'abcde'
-  }).on('error', function(err) {
-    t.equal(err.code, 'ENOENT')
-  }).resume()
+  }).createHelpStream('abcde')
+    .on('error', function(err) {
+      t.equal(err.code, 'ENOENT')
+    })
+    .resume()
 })
