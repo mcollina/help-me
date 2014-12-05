@@ -19,14 +19,15 @@ function helpMe(opts) {
   }
 
   return {
-    createHelpStream: createHelpStream
+    createStream: createStream,
+    toStdout: toStdout
   }
 
   function toPath(name) {
     return path.join(opts.dir, name + opts.ext)
   }
 
-  function createHelpStream(args) {
+  function createStream(args) {
     var out         = new PassThrough()
     var toStream    = toPath('help')
 
@@ -41,6 +42,15 @@ function helpMe(opts) {
         out.emit('error', err)
       })
       .pipe(out)
+  }
+
+  function toStdout(args) {
+    createStream(args)
+      .on('error', function(err) {
+        console.log('no such help file\n')
+        toStdout()
+      })
+      .pipe(process.stdout)
   }
 }
 
