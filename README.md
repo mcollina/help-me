@@ -22,7 +22,7 @@ help
   .pipe(process.stdout)
 
 // little helper to do the same
-help.helpToStdout(['hello']
+help.toStdout(['hello']
 ```
 
 Usage with commist
