@@ -33,7 +33,7 @@ function helpMe (opts) {
     }
 
     var out = through()
-    var gs = globStream.create([opts.dir + '/**/*' + opts.ext])
+    var gs = globStream([opts.dir + '/**/*' + opts.ext])
     var re = new RegExp(args.map(function (arg) {
       return arg + '[a-zA-Z0-9]*'
     }).join('[ /]+'))
@@ -42,7 +42,7 @@ function helpMe (opts) {
       if (err) return out.emit('error', err)
 
       files = files.map(function (file) {
-        file.relative = file.path.replace(file.base, '')
+        file.relative = file.path.replace(file.base, '').replace(/^\//, '')
         return file
       }).filter(function (file) {
         return file.relative.match(re)
