@@ -35,5 +35,8 @@
     "glob-stream": "^6.1.0",
     "through2": "^2.0.1",
     "xtend": "^4.0.0"
-  }
+  },
+	"files": [
+		"help-me.js"
+	]
 }
