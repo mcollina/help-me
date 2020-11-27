@@ -25,7 +25,7 @@ help
 help.toStdout(['hello']
 ```
 
-Exact filename match
+Strict filename match
 
 In case multiple files starts with the same prefix it is useful to resolve them 
 using fullname:
@@ -40,7 +40,7 @@ var help = helpMe({
   // the default
   ext: '.txt',
   // default false
-  exact: true
+  strict: true
 })
 
 help

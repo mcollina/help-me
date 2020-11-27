@@ -159,12 +159,12 @@ test('custom help command with an array', function (t) {
       }))
   })
 
-  t.test('custom disambiguation', function (t) {
+  t.test('strict name match', function (t) {
     t.plan(1)
 
     helpMe({
-      dir: 'fixture/disambiguation',
-      exact: true
+      dir: 'fixture/sameprefix',
+      strict: true
     }).createStream(['hello'])
       .pipe(concat({ encoding: 'string' }, function (data) {
         t.equal(data, 'hello')
