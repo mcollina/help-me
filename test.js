@@ -158,6 +158,18 @@ test('custom help command with an array', function (t) {
         t.equal(data, expected)
       }))
   })
+
+  t.test('custom disambiguation', function (t) {
+    t.plan(1)
+
+    helpMe({
+      dir: 'fixture/disambiguation',
+      exact: true
+    }).createStream(['hello'])
+      .pipe(concat({ encoding: 'string' }, function (data) {
+        t.equal(data, 'hello')
+      }))
+  })
 })
 
 test('support for help files organized in folders', function (t) {

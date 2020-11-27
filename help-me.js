@@ -10,7 +10,8 @@ var xtend = require('xtend')
 var defaults = {
   dir: path.join(path.dirname(require.main.filename), 'doc'),
   ext: '.txt',
-  help: 'help'
+  help: 'help',
+  exact: false
 }
 
 function helpMe (opts) {
@@ -35,7 +36,7 @@ function helpMe (opts) {
     var out = through()
     var gs = globStream([opts.dir + '/**/*' + opts.ext])
     var re = new RegExp(args.map(function (arg) {
-      return arg + '[a-zA-Z0-9]*'
+      return opts.exact ? `${arg}${opts.ext}$` : arg + '[a-zA-Z0-9]*'
     }).join('[ /]+'))
 
     gs.pipe(concat({ objectMode: true }, function (err, files) {
