@@ -25,6 +25,31 @@ help
 help.toStdout(['hello']
 ```
 
+Exact filename match
+
+In case multiple files starts with the same prefix it is useful to resolve them 
+using fullname:
+
+```js
+'use strict'
+
+var helpMe = require('help-me')
+var help = helpMe({
+  // the default
+  dir: path.join(path.dirname(require.main.filename), 'doc'),
+  // the default
+  ext: '.txt',
+  // default false
+  exact: true
+})
+
+help
+  .createStream(['hello']) // if `doc` contains hello.txt and hello-world.txt only hello.txt will be matched
+  .pipe(process.stdout)
+
+help.toStdout(['hello']
+```
+
 Usage with commist
 ------------------
 
