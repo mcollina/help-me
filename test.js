@@ -159,12 +159,11 @@ test('custom help command with an array', function (t) {
       }))
   })
 
-  t.test('strict name match', function (t) {
+  t.test('choose exact match over partial', function (t) {
     t.plan(1)
 
     helpMe({
-      dir: 'fixture/sameprefix',
-      strict: true
+      dir: 'fixture/sameprefix'
     }).createStream(['hello'])
       .pipe(concat({ encoding: 'string' }, function (data) {
         t.equal(data, 'hello')
