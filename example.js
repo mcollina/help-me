@@ -1,7 +1,7 @@
 'use strict'
 
-var commist = require('commist')()
-var help = require('./')()
+const commist = require('commist')()
+const help = require('./')()
 
 commist.register('help', help.toStdout)
 

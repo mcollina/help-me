@@ -1,9 +1,9 @@
 'use strict'
 
-var test = require('tape')
-var concat = require('concat-stream')
-var fs = require('fs')
-var helpMe = require('./')
+const test = require('tape')
+const concat = require('concat-stream')
+const fs = require('fs')
+const helpMe = require('./')
 
 test('show the doc/help.txt from the require.main folder if no options are passed', function (t) {
   t.plan(2)
@@ -88,7 +88,7 @@ test('missing help file', function (t) {
 })
 
 test('custom help command with an array', function (t) {
-  var helper = helpMe({
+  const helper = helpMe({
     dir: 'fixture/shortnames'
   })
 
@@ -147,7 +147,7 @@ test('custom help command with an array', function (t) {
   t.test('print a disambiguation', function (t) {
     t.plan(1)
 
-    var expected = '' +
+    const expected = '' +
       'There are 2 help pages that matches the given request, please disambiguate:\n' +
       '  * abcde fghi lmno\n' +
       '  * abcde hello\n'
@@ -172,7 +172,7 @@ test('custom help command with an array', function (t) {
 })
 
 test('support for help files organized in folders', function (t) {
-  var helper = helpMe({
+  const helper = helpMe({
     dir: 'fixture/dir'
   })
 

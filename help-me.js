@@ -1,20 +1,18 @@
 'use strict'
 
-var fs = require('fs')
-var path = require('path')
-var through = require('through2')
-var globStream = require('glob-stream')
-var concat = require('callback-stream')
-var xtend = require('xtend')
+const fs = require('fs')
+const path = require('path')
+const { PassThrough, pipeline } = require('readable-stream')
+const glob = require('glob')
 
-var defaults = {
+const defaults = {
   dir: path.join(path.dirname(require.main.filename), 'doc'),
   ext: '.txt',
   help: 'help'
 }
 
 function helpMe (opts) {
-  opts = xtend(defaults, opts)
+  opts = Object.assign({}, defaults, opts)
 
   if (!opts.dir) {
     throw new Error('missing directory')
@@ -32,18 +30,17 @@ function helpMe (opts) {
       args = [opts.help]
     }
 
-    var out = through()
-    var gs = globStream([opts.dir + '/**/*' + opts.ext])
-    var re = new RegExp(args.map(function (arg) {
+    const out = new PassThrough()
+    const re = new RegExp(args.map(function (arg) {
       return arg + '[a-zA-Z0-9]*'
     }).join('[ /]+'))
 
-    gs.pipe(concat({ objectMode: true }, function (err, files) {
+    glob(opts.dir + '/**/*' + opts.ext, function (err, files) {
       if (err) return out.emit('error', err)
 
-      files = files.map(function (file) {
-        file.relative = file.path.replace(file.base, '').replace(/^\//, '')
-        return file
+      files = files.map(function (path) {
+        const relative = path.replace(opts.dir, '').replace(/^\//, '')
+        return { path, relative }
       }).filter(function (file) {
         return file.relative.match(re)
       })
@@ -66,12 +63,8 @@ function helpMe (opts) {
         files = [exactMatch]
       }
 
-      fs.createReadStream(files[0].path)
-        .on('error', function (err) {
-          out.emit('error', err)
-        })
-        .pipe(out)
-    }))
+      pipeline(fs.createReadStream(files[0].path), out, () => {})
+    })
 
     return out
   }
