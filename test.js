@@ -158,6 +158,17 @@ test('custom help command with an array', function (t) {
         t.equal(data, expected)
       }))
   })
+
+  t.test('choose exact match over partial', function (t) {
+    t.plan(1)
+
+    helpMe({
+      dir: 'fixture/sameprefix'
+    }).createStream(['hello'])
+      .pipe(concat({ encoding: 'string' }, function (data) {
+        t.equal(data, 'hello')
+      }))
+  })
 })
 
 test('support for help files organized in folders', function (t) {

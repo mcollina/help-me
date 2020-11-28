@@ -51,15 +51,19 @@ function helpMe (opts) {
       if (files.length === 0) {
         return out.emit('error', new Error('no such help file'))
       } else if (files.length > 1) {
-        out.write('There are ' + files.length + ' help pages ')
-        out.write('that matches the given request, please disambiguate:\n')
-        files.forEach(function (file) {
-          out.write('  * ')
-          out.write(file.relative.replace(opts.ext, ''))
-          out.write('\n')
-        })
-        out.end()
-        return
+        const exactMatch = files.find((file) => file.relative === `${args[0]}${opts.ext}`)
+        if (!exactMatch) {
+          out.write('There are ' + files.length + ' help pages ')
+          out.write('that matches the given request, please disambiguate:\n')
+          files.forEach(function (file) {
+            out.write('  * ')
+            out.write(file.relative.replace(opts.ext, ''))
+            out.write('\n')
+          })
+          out.end()
+          return
+        }
+        files = [exactMatch]
       }
 
       fs.createReadStream(files[0].path)
