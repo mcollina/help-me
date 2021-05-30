@@ -5,17 +5,38 @@ const concat = require('concat-stream')
 const fs = require('fs')
 const helpMe = require('./')
 
-test('show the doc/help.txt from the require.main folder if no options are passed', function (t) {
-  t.plan(2)
+test('throws if no directory is passed', function (t) {
+  try {
+    helpMe()
+    t.fail()
+  } catch (err) {
+    t.equal(err.message, 'missing dir')
+  }
+  t.end()
+})
 
-  helpMe()
-    .createStream()
-    .pipe(concat(function (data) {
-      fs.readFile('./doc/help.txt', function (err, expected) {
-        t.error(err)
-        t.equal(data.toString(), expected.toString())
-      })
-    }))
+test('throws if a normal file is passed', function (t) {
+  try {
+    helpMe({
+      dir: __filename
+    })
+    t.fail()
+  } catch (err) {
+    t.equal(err.message, `${__filename} is not a directory`)
+  }
+  t.end()
+})
+
+test('throws if the directory cannot be accessed', function (t) {
+  try {
+    helpMe({
+      dir: './foo'
+    })
+    t.fail()
+  } catch (err) {
+    t.equal(err.message, './foo is not a directory')
+  }
+  t.end()
 })
 
 test('show a generic help.txt from a folder to a stream', function (t) {

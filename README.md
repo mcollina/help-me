@@ -10,9 +10,9 @@ Example
 'use strict'
 
 var helpMe = require('help-me')
+var path = require('path')
 var help = helpMe({
-  // the default
-  dir: path.join(path.dirname(require.main.filename), 'doc'),
+  dir: path.join(__dirname, 'doc'),
   // the default
   ext: '.txt'
 })
@@ -32,7 +32,10 @@ Usage with commist
 
 ```js
 var commist = require('commist')()
-var help = require('help-me')()
+var path = require('path')
+var help = require('help-me')({
+  dir: path.join(__dirname, 'doc')
+})
 
 commist.register('help', help.toStdout)
 
