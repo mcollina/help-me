@@ -1,21 +1,32 @@
 'use strict'
 
 const fs = require('fs')
-const path = require('path')
 const { PassThrough, pipeline } = require('readable-stream')
 const glob = require('glob')
 
 const defaults = {
-  dir: path.join(path.dirname(require.main.filename), 'doc'),
   ext: '.txt',
   help: 'help'
+}
+
+function isDirectory (path) {
+  try {
+    const stat = fs.lstatSync(path)
+    return stat.isDirectory()
+  } catch (err) {
+    return false
+  }
 }
 
 function helpMe (opts) {
   opts = Object.assign({}, defaults, opts)
 
   if (!opts.dir) {
-    throw new Error('missing directory')
+    throw new Error('missing dir')
+  }
+
+  if (!isDirectory(opts.dir)) {
+    throw new Error(`${opts.dir} is not a directory`)
   }
 
   return {
