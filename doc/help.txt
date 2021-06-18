@@ -1,1 +1,5 @@
-aaaaa
+HELP-ME by Matteo
+
+* start     starts a script
+* help      shows help
+
