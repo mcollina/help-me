@@ -1,6 +1,7 @@
 'use strict'
 
 const fs = require('fs')
+const path = require('path').posix
 const { PassThrough, pipeline } = require('readable-stream')
 const glob = require('glob')
 
@@ -42,24 +43,41 @@ function helpMe (opts) {
     }
 
     const out = new PassThrough()
-    const re = new RegExp(args.map(function (arg) {
-      return arg + '[a-zA-Z0-9]*'
-    }).join('[ /]+'))
+    const re = new RegExp(
+      args
+        .map(function (arg) {
+          return arg + '[a-zA-Z0-9]*'
+        })
+        .join('[ /]+')
+    )
 
     glob(opts.dir + '/**/*' + opts.ext, function (err, files) {
       if (err) return out.emit('error', err)
 
-      files = files.map(function (path) {
-        const relative = path.replace(opts.dir, '').replace(/^\//, '')
-        return { path, relative }
-      }).filter(function (file) {
-        return file.relative.match(re)
-      })
+      files = files
+        .map(function (file) {
+          if (process.platform === 'win32') {
+            const dirPaths = opts.dir.split('\\')
+            let tempDir = ''
+            dirPaths.forEach((dirPath) => {
+              tempDir = path.join(tempDir, dirPath)
+            })
+            opts.dir = tempDir
+          }
+
+          const relative = file.replace(opts.dir, '').replace(/^\//, '')
+          return { file, relative }
+        })
+        .filter(function (file) {
+          return file.relative.match(re)
+        })
 
       if (files.length === 0) {
         return out.emit('error', new Error('no such help file'))
       } else if (files.length > 1) {
-        const exactMatch = files.find((file) => file.relative === `${args[0]}${opts.ext}`)
+        const exactMatch = files.find(
+          (file) => file.relative === `${args[0]}${opts.ext}`
+        )
         if (!exactMatch) {
           out.write('There are ' + files.length + ' help pages ')
           out.write('that matches the given request, please disambiguate:\n')
@@ -74,7 +92,7 @@ function helpMe (opts) {
         files = [exactMatch]
       }
 
-      pipeline(fs.createReadStream(files[0].path), out, () => {})
+      pipeline(fs.createReadStream(files[0].file), out, () => {})
     })
 
     return out
