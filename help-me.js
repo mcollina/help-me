@@ -1,7 +1,6 @@
 'use strict'
 
 const fs = require('fs')
-const path = require('path').posix
 const { PassThrough, pipeline } = require('readable-stream')
 const glob = require('glob')
 
@@ -57,12 +56,7 @@ function helpMe (opts) {
       files = files
         .map(function (file) {
           if (process.platform === 'win32') {
-            const dirPaths = opts.dir.split('\\')
-            let tempDir = ''
-            dirPaths.forEach((dirPath) => {
-              tempDir = path.join(tempDir, dirPath)
-            })
-            opts.dir = tempDir
+            opts.dir = opts.dir.split('\\').join('/')
           }
 
           const relative = file.replace(opts.dir, '').replace(/^\//, '')
