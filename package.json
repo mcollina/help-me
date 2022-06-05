@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/mcollina/help-me",
   "devDependencies": {
-    "commist": "^1.0.0",
+    "commist": "^2.0.0",
     "concat-stream": "^2.0.0",
     "pre-commit": "^1.1.3",
     "standard": "^16.0.0",
@@ -31,7 +31,7 @@
     "tape": "^5.0.0"
   },
   "dependencies": {
-    "glob": "^7.1.6",
+    "glob": "^8.0.0",
     "readable-stream": "^3.6.0"
   }
 }
