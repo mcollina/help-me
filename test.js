@@ -3,6 +3,7 @@
 const test = require('tape')
 const concat = require('concat-stream')
 const fs = require('fs')
+const path = require('path')
 const helpMe = require('./')
 
 test('throws if no directory is passed', function (t) {
@@ -39,11 +40,25 @@ test('throws if the directory cannot be accessed', function (t) {
   t.end()
 })
 
-test('show a generic help.txt from a folder to a stream', function (t) {
+test('show a generic help.txt from a folder to a stream with relative path in dir', function (t) {
   t.plan(2)
 
   helpMe({
     dir: 'fixture/basic'
+  }).createStream()
+    .pipe(concat(function (data) {
+      fs.readFile('fixture/basic/help.txt', function (err, expected) {
+        t.error(err)
+        t.equal(data.toString(), expected.toString())
+      })
+    }))
+})
+
+test('show a generic help.txt from a folder to a stream with absolute path in dir', function (t) {
+  t.plan(2)
+
+  helpMe({
+    dir: path.join(__dirname, 'fixture/basic')
   }).createStream()
     .pipe(concat(function (data) {
       fs.readFile('fixture/basic/help.txt', function (err, expected) {
