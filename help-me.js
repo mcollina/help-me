@@ -50,15 +50,15 @@ function helpMe (opts) {
         .join('[ /]+')
     )
 
+    if (process.platform === 'win32') {
+      opts.dir = opts.dir.split('\\').join('/')
+    }
+
     glob(opts.dir + '/**/*' + opts.ext, function (err, files) {
       if (err) return out.emit('error', err)
 
       files = files
         .map(function (file) {
-          if (process.platform === 'win32') {
-            opts.dir = opts.dir.split('\\').join('/')
-          }
-
           const relative = file.replace(opts.dir, '').replace(/^\//, '')
           return { file, relative }
         })
