@@ -20,6 +20,7 @@ function isDirectory (path) {
 
 function helpMe (opts) {
   opts = Object.assign({}, defaults, opts)
+  const stdout = opts.stdout || process.stdout
 
   if (!opts.dir) {
     throw new Error('missing dir')
@@ -92,13 +93,15 @@ function helpMe (opts) {
     return out
   }
 
-  function toStdout (args) {
-    createStream(args)
-      .on('error', function () {
-        console.log('no such help file\n')
-        toStdout()
+  function toStdout (args = []) {
+    return new Promise((resolve) => {
+      pipeline(createStream(args), stdout, function (err) {
+        if (err) {
+          stdout.write(`no such help file: ${args.join(' ')}\n\n`)
+        }
+        toStdout().then(resolve)
       })
-      .pipe(process.stdout)
+    })
   }
 }
 

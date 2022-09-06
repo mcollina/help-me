@@ -25,6 +25,21 @@ help
 help.toStdout(['hello'])
 ```
 
+Using ESM and top-level await::
+
+```js
+import helpMe from 'help-me'
+import { join } from 'desm'
+
+const help = helpMe({
+  dir: join(import.meta.url, 'doc'),
+  // the default
+  ext: '.txt'
+})
+
+await help.toStdout(['hello'])
+```
+
 Usage with commist
 ------------------
 
