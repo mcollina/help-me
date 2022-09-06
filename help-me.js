@@ -109,7 +109,7 @@ function helpMe (opts) {
 
   function onMissingHelp (_, args, stream) {
     stream.write(`no such help file: ${args.join(' ')}.\n\n`)
-    return toStdout([], { stream })
+    return toStdout([], { stream, async onMissingHelp () {} })
   }
 }
 
