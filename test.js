@@ -252,9 +252,68 @@ test('toStdout helper', async function (t) {
   })
 
   await helpMe({
+    dir: 'fixture/basic'
+  }).toStdout([], { stream })
+
+  t.ok(completed)
+})
+
+test('handle error in toStdout', async function (t) {
+  t.plan(2)
+
+  let completed = false
+  const stream = concat(function (data) {
+    completed = true
+    fs.readFile('fixture/basic/help.txt', function (err, expected) {
+      t.error(err)
+      t.equal(data.toString(), 'no such help file: something.\n\n' + expected.toString())
+    })
+  })
+
+  await helpMe({
+    dir: 'fixture/basic'
+  }).toStdout(['something'], {
+    stream
+  })
+
+  t.ok(completed)
+})
+
+test('customize missing help fle message', async function (t) {
+  t.plan(3)
+
+  const stream = concat(function (data) {
+    t.equal(data.toString(), 'kaboom\n\n')
+  })
+
+  await helpMe({
+    dir: 'fixture/basic'
+  }).toStdout(['something'], {
+    stream,
+    async onMissingHelp (err, args, stream) {
+      t.equal(err.message, 'no such help file')
+      t.deepEquals(args, ['something'])
+      stream.end('kaboom\n\n')
+    }
+  })
+})
+
+test('toStdout without factory', async function (t) {
+  t.plan(2)
+
+  let completed = false
+  const stream = concat(function (data) {
+    completed = true
+    fs.readFile('fixture/basic/help.txt', function (err, expected) {
+      t.error(err)
+      t.equal(data.toString(), expected.toString())
+    })
+  })
+
+  await helpMe.help({
     dir: 'fixture/basic',
-    stdout: stream
-  }).toStdout()
+    stream
+  }, [])
 
   t.ok(completed)
 })

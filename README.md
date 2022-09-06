@@ -28,16 +28,14 @@ help.toStdout(['hello'])
 Using ESM and top-level await::
 
 ```js
-import helpMe from 'help-me'
+import { help } from 'help-me'
 import { join } from 'desm'
 
-const help = helpMe({
+await help({
   dir: join(import.meta.url, 'doc'),
   // the default
   ext: '.txt'
-})
-
-await help.toStdout(['hello'])
+}, ['hello'])
 ```
 
 Usage with commist
