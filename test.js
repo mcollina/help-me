@@ -238,3 +238,23 @@ test('support for help files organized in folders', function (t) {
       }))
   })
 })
+
+test('toStdout helper', async function (t) {
+  t.plan(2)
+
+  let completed = false
+  const stream = concat(function (data) {
+    completed = true
+    fs.readFile('fixture/basic/help.txt', function (err, expected) {
+      t.error(err)
+      t.equal(data.toString(), expected.toString())
+    })
+  })
+
+  await helpMe({
+    dir: 'fixture/basic',
+    stdout: stream
+  }).toStdout()
+
+  t.ok(completed)
+})
