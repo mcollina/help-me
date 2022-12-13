@@ -317,3 +317,16 @@ test('toStdout without factory', async function (t) {
 
   t.ok(completed)
 })
+
+test('should allow for awaiting the response with default stdout stream', async function (t) {
+  t.plan(1)
+
+  try {
+    await helpMe({
+      dir: 'fixture/basic'
+    }).toStdout([])
+    t.ok('awaited correctly')
+  } catch {
+    t.fail('should not reject')
+  }
+})
