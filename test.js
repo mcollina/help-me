@@ -5,6 +5,7 @@ const concat = require('concat-stream')
 const fs = require('fs')
 const path = require('path')
 const helpMe = require('./')
+const proxyquire = require('proxyquire')
 
 test('throws if no directory is passed', function (t) {
   try {
@@ -321,12 +322,22 @@ test('toStdout without factory', async function (t) {
 test('should allow for awaiting the response with default stdout stream', async function (t) {
   t.plan(1)
 
-  try {
-    await helpMe({
-      dir: 'fixture/basic'
-    }).toStdout([])
-    t.ok('awaited correctly')
-  } catch {
-    t.fail('should not reject')
+  const _process = Object.create(process)
+  const stdout = Object.create(process.stdout)
+  Object.defineProperty(_process, 'stdout', {
+    value: stdout
+  })
+
+  stdout.write = (data, cb) => {
+    t.equal(data.toString(), 'hello world\n')
+    cb()
   }
+
+  const helpMe = proxyquire('./help-me', {
+    process: _process
+  })
+
+  await helpMe.help({
+    dir: 'fixture/basic'
+  }, ['help'])
 })

@@ -3,6 +3,7 @@
 const fs = require('fs')
 const { PassThrough, Writable, pipeline } = require('stream')
 const glob = require('glob')
+const process = require('process')
 
 const defaults = {
   ext: '.txt',
