@@ -3,6 +3,7 @@
 const test = require('tape')
 const concat = require('concat-stream')
 const fs = require('fs')
+const os = require('os')
 const path = require('path')
 const helpMe = require('./')
 const proxyquire = require('proxyquire')
@@ -330,7 +331,7 @@ test('should allow for awaiting the response with default stdout stream', async 
 
   let completed = false
   stdout.write = (data, cb) => {
-    t.equal(data.toString(), 'hello world\n')
+    t.equal(data.toString(), 'hello world' + os.EOL)
     completed = true
     cb()
   }
