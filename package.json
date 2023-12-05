@@ -32,7 +32,7 @@
     "tape": "^5.0.0"
   },
   "dependencies": {
-    "glob": "^8.0.0",
+    "glob": "^10.3.10",
     "readable-stream": "^3.6.0"
   }
 }

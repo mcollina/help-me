@@ -2,7 +2,7 @@
 
 const fs = require('fs')
 const { PassThrough, Writable, pipeline } = require('stream')
-const glob = require('glob')
+const { glob } = require('glob')
 const process = require('process')
 
 const defaults = {
@@ -63,9 +63,7 @@ function helpMe (opts) {
       opts.dir = opts.dir.split('\\').join('/')
     }
 
-    glob(opts.dir + '/**/*' + opts.ext, function (err, files) {
-      if (err) return out.emit('error', err)
-
+    glob(opts.dir + '/**/*' + opts.ext).then((files) => {
       files = files
         .map(function (file) {
           const relative = file.replace(opts.dir, '').replace(/^\//, '')
@@ -96,6 +94,8 @@ function helpMe (opts) {
       }
 
       pipeline(fs.createReadStream(files[0].file), out, () => {})
+    }).catch((err) => {
+      return out.emit('error', err)
     })
 
     return out
