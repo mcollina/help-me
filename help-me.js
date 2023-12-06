@@ -63,40 +63,42 @@ function helpMe (opts) {
       opts.dir = opts.dir.split('\\').join('/')
     }
 
-    glob(opts.dir + '/**/*' + opts.ext).then((files) => {
-      files = files
-        .map(function (file) {
-          const relative = file.replace(opts.dir, '').replace(/^\//, '')
-          return { file, relative }
-        })
-        .filter(function (file) {
-          return file.relative.match(re)
-        })
-
-      if (files.length === 0) {
-        return out.emit('error', new Error('no such help file'))
-      } else if (files.length > 1) {
-        const exactMatch = files.find(
-          (file) => file.relative === `${args[0]}${opts.ext}`
-        )
-        if (!exactMatch) {
-          out.write('There are ' + files.length + ' help pages ')
-          out.write('that matches the given request, please disambiguate:\n')
-          files.forEach(function (file) {
-            out.write('  * ')
-            out.write(file.relative.replace(opts.ext, ''))
-            out.write('\n')
+    glob(opts.dir + '/**/*' + opts.ext)
+      .then((files) => {
+        files = files
+          .map(function (file) {
+            const relative = file.replace(opts.dir, '').replace(/^\//, '')
+            return { file, relative }
           })
-          out.end()
-          return
-        }
-        files = [exactMatch]
-      }
+          .filter(function (file) {
+            return file.relative.match(re)
+          })
 
-      pipeline(fs.createReadStream(files[0].file), out, () => {})
-    }).catch((err) => {
-      return out.emit('error', err)
-    })
+        if (files.length === 0) {
+          return out.emit('error', new Error('no such help file'))
+        } else if (files.length > 1) {
+          const exactMatch = files.find(
+            (file) => file.relative === `${args[0]}${opts.ext}`
+          )
+          if (!exactMatch) {
+            out.write('There are ' + files.length + ' help pages ')
+            out.write('that matches the given request, please disambiguate:\n')
+            files.forEach(function (file) {
+              out.write('  * ')
+              out.write(file.relative.replace(opts.ext, ''))
+              out.write('\n')
+            })
+            out.end()
+            return
+          }
+          files = [exactMatch]
+        }
+
+        pipeline(fs.createReadStream(files[0].file), out, () => {})
+      })
+      .catch((err) => {
+        return out.emit('error', err)
+      })
 
     return out
   }
@@ -108,7 +110,7 @@ function helpMe (opts) {
     return new Promise((resolve, reject) => {
       createStream(args)
         .on('error', (err) => {
-          _onMissingHelp(err, args, stream).then(resolve, reject)
+          _onMissingHelp(err, args, stream)
         })
         .pipe(stream)
         .on('close', resolve)

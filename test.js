@@ -316,7 +316,7 @@ test('handle error in toStdout', async function (t) {
   t.ok(completed)
 })
 
-test.skip('customize missing help file message', async function (t) {
+test('customize missing help file message', async function (t) {
   t.plan(3)
 
   const stream = concat(function (data) {
