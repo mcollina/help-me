@@ -209,38 +209,6 @@ test('custom help command with an array', function (t) {
   })
 })
 
-test('support for help files organized in folders', function (t) {
-  const helper = helpMe({
-    dir: 'fixture/dir'
-  })
-
-  t.test('passing an array', function (t) {
-    t.plan(2)
-
-    helper
-      .createStream(['a', 'b'])
-      .pipe(concat(function (data) {
-        fs.readFile('fixture/dir/a/b.txt', function (err, expected) {
-          t.error(err)
-          t.equal(data.toString(), expected.toString())
-        })
-      }))
-  })
-
-  t.test('passing a string', function (t) {
-    t.plan(2)
-
-    helper
-      .createStream('a b')
-      .pipe(concat(function (data) {
-        fs.readFile('fixture/dir/a/b.txt', function (err, expected) {
-          t.error(err)
-          t.equal(data.toString(), expected.toString())
-        })
-      }))
-  })
-})
-
 test('toStdout helper', async function (t) {
   t.plan(2)
 

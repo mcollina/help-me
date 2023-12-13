@@ -2,8 +2,8 @@
 
 const fs = require('fs')
 const { PassThrough, Writable, pipeline } = require('stream')
-const glob = require('glob')
 const process = require('process')
+const { join } = require('path')
 
 const defaults = {
   ext: '.txt',
@@ -63,13 +63,17 @@ function helpMe (opts) {
       opts.dir = opts.dir.split('\\').join('/')
     }
 
-    glob(opts.dir + '/**/*' + opts.ext, function (err, files) {
+    fs.readdir(opts.dir, function (err, files) {
       if (err) return out.emit('error', err)
 
+      const regexp = new RegExp('.*' + opts.ext + '$')
       files = files
-        .map(function (file) {
-          const relative = file.replace(opts.dir, '').replace(/^\//, '')
-          return { file, relative }
+        .filter(function (file) {
+          const matched = file.match(regexp)
+          return !!matched
+        })
+        .map(function (relative) {
+          return { file: join(opts.dir, relative), relative }
         })
         .filter(function (file) {
           return file.relative.match(re)
