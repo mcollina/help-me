@@ -1,6 +1,6 @@
 {
   "name": "help-me",
-  "version": "4.2.0",
+  "version": "5.0.0",
   "description": "Help command for node, partner of minimist and commist",
   "main": "help-me.js",
   "scripts": {
